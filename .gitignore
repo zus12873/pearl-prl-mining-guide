@@ -1,0 +1,45 @@
+# --- Secrets / wallet (NEVER commit) ---
+*.seed
+*mnemonic*
+*.key
+*.pem
+wallet.db
+.oyster/
+rpc.cert
+rpc.key
+checksums.txt
+.env
+.env.*
+credentials.json
+
+# --- Binaries / downloads ---
+alpha-miner
+oyster
+prlctl
+pearld
+*.tar.gz
+*.zip
+*.exe
+*.dmg
+*.deb
+
+# --- Python (uv) ---
+__pycache__/
+*.pyc
+.venv/
+venv/
+.pytest_cache/
+.mypy_cache/
+*.egg-info/
+
+# --- Data / logs ---
+*.log
+logs/
+data/
+*.sqlite
+
+# --- IDE / OS ---
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
