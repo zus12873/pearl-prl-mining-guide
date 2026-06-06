@@ -24,10 +24,10 @@ This repo is a **reproducible, field-tested** record of mining **Pearl L1 (nativ
 **The PRL you mine (Pearl Research, an L1) is NOT the PRL on Binance (Perle, a different Solana project, delisted 2026-04-28).**
 **你挖的 PRL（Pearl Research，一条 L1）≠ 币安上的 PRL（Perle，另一个 Solana 项目，已于 2026-04-28 下架）。**
 
-- Native PRL has **no centralized-exchange (CEX) listing**. Sending it to any exchange "PRL" deposit address = **permanent loss**.
-- 原生 PRL **没有任何中心化交易所上线**。把它充到任何交易所的 "PRL" 地址 = **永久丢币**。
-- The only cash-out path is `native PRL → (bridge) WPRL → DEX/OTC`. See [docs/03](docs/03-tokens-and-cashout.md).
-- 唯一变现路径是 `原生 PRL →（过桥）WPRL → DEX/OTC`。详见 [docs/03](docs/03-tokens-and-cashout.md)。
+- The only CEX listing native PRL is **SafeTrade** (PRL/USDT). It is **NOT** on Binance/OKX/Gate/Bitget/MEXC — sending native PRL to a *major* exchange's "PRL" address = **permanent loss**.
+- 上原生 PRL 的 CEX **只有 SafeTrade**（PRL/USDT）。它**没**上币安/欧易/Gate/Bitget/MEXC——把原生 PRL 充到*主流*交易所的 "PRL" 地址 = **永久丢币**。
+- Cheapest cash-out: `native PRL → SafeTrade → sell PRL/USDT (0.1%) → USDT via TRC-20 → Binance`. Fallback: `→ (bridge) WPRL → DEX/OTC`. See [docs/03](docs/03-tokens-and-cashout.md).
+- 最省变现：`原生 PRL → SafeTrade → 卖 PRL/USDT(0.1%) → USDT 走 TRC-20 → 币安`。备选：`→（过桥）WPRL → DEX/OTC`。详见 [docs/03](docs/03-tokens-and-cashout.md)。
 - **Never** paste your seed phrase / mnemonic into any website, bot, or chat. / **绝不**把助记词输入任何网站、机器人或聊天。
 
 ---
