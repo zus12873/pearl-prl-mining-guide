@@ -60,7 +60,7 @@ SafeTrade 这条路全面占优：费率 **0.1% vs 1.8–2%**、**真实订单�
 
 | Route / 通道 | Headline fee / 明示费率 | Settlement / 结算 | Min / 最低 | Model / 模式 | Extra / 额外成本 |
 |---|---|---|---|---|---|
-| **★ SafeTrade (CEX)** | **0.1%** maker/taker | **USDT** (TRC-20 / BSC) | none | Order-book CEX (custodial) + **native PRL deposit** | ~`1 USDT` flat TRC-20 withdrawal — **no Ethereum gas** |
+| **★ SafeTrade (CEX)** | **0.1%** maker/taker | **USDT** (TRC-20 / BSC) | 1 PRL deposit | Order-book CEX (custodial) + **native PRL deposit** (0 deposit fee, 20 confs) | TRC-20 withdrawal **~0.08 USDT measured** (≪ Ethereum gas) |
 | **lordofpearls OTC** | **1.8%** | USDC on **Ethereum** | none stated | Telegram bot `@LOPOTCBOT` (custodial trust) | ETH withdrawal gas |
 | **pearl-otc.com** | **2%** (PRL leg) | USDC on **Arbitrum** | **1,000 PRL** | P2P order book + on-chain **2-of-2 multisig escrow** (non-custodial) | Arbitrum gas (cents) |
 | **PearlBridge → Uniswap** | bridge fee (in-app) + **1%** DEX | WPRL on Ethereum | — | bridge + DEX | **ETH gas ×2 ($5–20+)** + slippage |
@@ -71,6 +71,24 @@ SafeTrade 这条路全面占优：费率 **0.1% vs 1.8–2%**、**真实订单�
 - ⚠️ SafeTrade is **custodial** — sell and withdraw promptly; never store balances. May require **KYC**; verify the deposit screen shows a `prl1p…` address and confirm the live TRC-20 USDT withdrawal fee before relying on it. / SafeTrade 是**托管**所——卖完即提、不久放；可能需 **KYC**；用前在充值页确认是 `prl1p…` 地址、并核对当时的 TRC-20 USDT 提现费。
 - For the OTC fallbacks: the real cost is the **spread** (price on a thin book), not the 0.2% fee gap — always get a same-day quote. / OTC 备选的真正成本是**成交价差**，不是那 0.2%——务必拿当天报价。
 - ⚠️ All four are unofficial third parties; this repo does not vouch for their safety. / 四家全是非官方第三方，本仓库不为其安全背书。
+
+### 5.1 Real cash-out log (2026-06-09) / 实测案例 — 首次真实变现
+
+A full end-to-end run, measured (not estimated). Native PRL mined on the rig → SafeTrade → Binance:
+一次完整实跑的**实测**数据（非估算）。矿机挖的原生 PRL → SafeTrade → 币安：
+
+| Step / 步骤 | Measured / 实测 |
+|---|---|
+| Sent native PRL → SafeTrade `prl1p…` deposit | 2 PRL test then 44 PRL; on-chain fee `0.0000155` + `0.0001945` PRL (negligible); 0 deposit fee; credited after **20 confs** (~20–40 min) / 先试 2 个再发 44 个；链上费极小；充值零费；20 确认后到账 |
+| Sold on SafeTrade order book | ~46 PRL @ **~0.52 USDT/PRL avg**, 0.1% trade fee / 订单簿卖出，均价约 0.52 |
+| Withdraw USDT → Binance (TRC-20) | fee **~0.08 USDT**, credited free on Binance / TRC-20 提现费仅约 0.08，币安免费入账 |
+| **Net landed / 净到手** | **23.82 USDT** from the PRL |
+
+**Lessons / 经验:**
+- **Fee wear was tiny (~0.4%)** — 0.1% trade + ~0.08 USDT withdrawal. The SafeTrade route is genuinely cheap; TRC-20 withdrawal was ~`0.08 USDT`, not the ~`$1` first assumed. / **费用磨损仅 ~0.4%**——路子确实省，TRC-20 提现费远低于预想。
+- **The real value gap was the FILL PRICE**: `0.52` realized vs the `~0.68` WPRL/DEX reference — a thin-book market sell ate the bid down. The cost was *price impact, not fees.* / **真正少拿的是成交价**（0.52 vs 参考 0.68），薄盘市价卖把买盘吃穿了——代价是**价格冲击，不是手续费**。
+- Even at `0.52`, this small batch still beat bridge→DEX (where `0.68 × 46 ≈ $31` would be gutted by `$10–20` Ethereum gas → ~`$11–21`). For small sizes, **low fees beat a higher headline price.** / 即便 0.52，这点量仍胜过过桥→DEX（标价 0.68 但被以太坊 gas 吃掉）——小额下"费低"压倒"价高"。
+- **Next time:** sell with patient **limit orders in smaller chunks** (don't market-dump a thin book), and accumulate **100–200 PRL per batch** to amortize the fixed costs further. / **下次**：挂限价、分批卖，别市价砸薄盘；攒到 100–200 个一批更划算。
 
 ## 6. Ethereum gas — how withdrawal cost is computed / 提现 gas 怎么算
 ```
