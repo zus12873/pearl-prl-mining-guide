@@ -1,10 +1,10 @@
 <!--
 title: Deployment runbook — Pearl mining on WSL2 + NVIDIA GPU
-description: Verified step-by-step for the live rig — WSL GPU, wallet, PeakMiner 2.16.5 on Kryptex in tmux, local and pool monitoring, and how pool payouts reach the wallet. The May 2026 AlphaMiner/AlphaPool steps are an appendix.
+description: Verified step-by-step for the live rig — WSL GPU, wallet, PeakMiner 2.17.2 on Kryptex in tmux, local and pool monitoring, and how pool payouts reach the wallet. The May 2026 AlphaMiner/AlphaPool steps are an appendix.
 language: [en, zh]
 updated: 2026-09-27
 tags: [runbook, wsl, peakminer, kryptex, oyster, prlctl, tmux, spv]
-verified: RTX 5080 / WSL2 Ubuntu / PeakMiner 2.16.5 + Kryptex / 2026-09-27
+verified: RTX 5080 / WSL2 Ubuntu / PeakMiner 2.17.2 + Kryptex / 2026-09-27
 -->
 
 # 02 · Deployment runbook / 部署实操
@@ -14,7 +14,7 @@ verified: RTX 5080 / WSL2 Ubuntu / PeakMiner 2.16.5 + Kryptex / 2026-09-27
 
 Pipeline / 全流程：`WSL GPU check → wallet → payout address → PeakMiner on Kryptex → monitor → automatic pool payout → cash-out in docs/03`.
 
-Current rig / 当前矿机：one RTX 5080, PeakMiner 2.16.5, tmux session `pearl`, worker name you choose, Kryptex PPS+. The AlphaMiner appendix at the bottom is retired.
+Current rig / 当前矿机：one RTX 5080, PeakMiner 2.17.2, tmux session `pearl`, worker name you choose, Kryptex PPS+. The AlphaMiner appendix at the bottom is retired. PeakMiner 2.16.5 is still on disk and is not the process in `pearl`.
 
 ---
 
@@ -125,20 +125,20 @@ Pool facts checked against `GET https://pool.kryptex.com/prl/api/v1/pool/info` o
 ### C1. The binary this rig runs / 这台机器在跑的二进制
 ```bash
 mkdir -p ~/pearl-mining/logs
-cd ~/pearl-mining/peakminer-2.16.5
-# File that was running on 2026-09-27:
-EXPECT=5dc4b927fb91442a66a2e02c1636f629d4042a03a5c1523cd841d6ece66e0beb
-GOT=$(sha256sum peakminer-2.16.5-linux-x86_64 | cut -d' ' -f1)
+cd ~/pearl-mining/peakminer-2.17.2
+# File running after the 2026-09-27 upgrade. Hash is from the v2.17.2 GitHub release note:
+EXPECT=37a316a05d6ffb6293a6e28d707c90909020b53193f723e557faa09d721abf82
+GOT=$(sha256sum peakminer-2.17.2-linux-x86_64 | cut -d' ' -f1)
 [ "$GOT" = "$EXPECT" ] && echo "✅ OK" || echo "❌ MISMATCH — STOP"
 ```
-Re-check whatever you download against the publisher before trusting a new build. Kryptex's worker API on 2026-09-27 advertised agent `peakminer/2.17.2` while this rig's 2.16.5 was still getting `accepted` shares. A pool banner saying "old miners submit invalid shares" means: if shares start coming back invalid, upgrade; do not upgrade in the middle of a healthy session just because the banner is up.
-重新下载时先跟发布方核对哈希。2026-09-27 Kryptex 工人接口显示更新的 `peakminer/2.17.2`，但这台 2.16.5 仍在收到 `accepted`。矿池横幅写“旧矿工份额无效”的含义是：份额开始被拒再升级；会话正常时不要因为横幅就中途换版本。
+Download: `https://github.com/peakminer/peakminer/releases/download/v2.17.2/peakminer-2.17.2-linux-x86_64`. Re-check the release note before trusting this pin on a newer tag. The previous binary, 2.16.5, SHA256 `5dc4b927fb91442a66a2e02c1636f629d4042a03a5c1523cd841d6ece66e0beb`, remains in `~/pearl-mining/peakminer-2.16.5` and is not launched.
+下载地址见上。换更新的 tag 之前先重新对发布说明里的哈希。上一版 2.16.5 还在 `~/pearl-mining/peakminer-2.16.5`，启动脚本不再用它。
 
 ### C2. Launch script / 启动脚本
-`~/pearl-mining/peakminer-2.16.5/run-kryptex.sh` (run from that directory):
+`~/pearl-mining/peakminer-2.17.2/run-kryptex.sh` (run from that directory):
 ```bash
 #!/bin/bash
-cd /home/huanmeng/pearl-mining/peakminer-2.16.5
+cd /home/huanmeng/pearl-mining/peakminer-2.17.2
 exec ./peakminer --coin pearl \
   -o prl-hk.kryptex.network:7048 \
   -o prl-sg.kryptex.network:7048 \
@@ -153,8 +153,8 @@ exec ./peakminer --coin pearl \
 
 ### C3. Run in tmux / 放进 tmux
 ```bash
-tmux new-session -d -s pearl -c ~/pearl-mining/peakminer-2.16.5 \
-  ~/pearl-mining/peakminer-2.16.5/run-kryptex.sh
+tmux new-session -d -s pearl -c ~/pearl-mining/peakminer-2.17.2 \
+  ~/pearl-mining/peakminer-2.17.2/run-kryptex.sh
 ```
 - Attach / 查看：`tmux attach -t pearl`（detach：`Ctrl+B` 然后 `D`）。
 - Stop / 停止：`tmux kill-session -t pearl`. Do **not** `pkill -f peakminer` from a command line that itself contains that string — the pattern can match the shell wrapper.
@@ -230,7 +230,7 @@ Turning wallet coins into USDT is the next page, not a pool button. → [03 · T
 |---|---|---|
 | `nvidia-smi: command not found` | not on PATH in WSL | use `/usr/lib/wsl/lib/nvidia-smi`; `libcuda.so*` present ⇒ GPU OK |
 | `fan set to 80% skipped — NVML denied` | `--gpu-fan` needs root | ignore, or pin the fan in MSI Afterburner on Windows. Mining continues |
-| `sha256sum` mismatch | file is not the pinned 2.16.5 binary | stop; do not run it |
+| `sha256sum` mismatch | file is not the pinned 2.17.2 binary | stop; do not run it |
 | `invalid passphrase for master public key` | wallet was created WITH a public passphrase | `rm -rf ~/.oyster`, recreate answering `n` to public encryption (or pass `--walletpass`) |
 | `-4: blockchain RPC is inactive` | wallet has no active chain backend | start `oyster` with `--usespv --addpeer=<IP>` (see B3) |
 | `DNS discovery failed … x49.seederN… no such host` | WSL DNS can't resolve seeder subdomains | feed peer IPs from base `seeder1.pearlresearch.ai` via `--addpeer` |

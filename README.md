@@ -4,7 +4,7 @@ description: Field-tested, AI-friendly bilingual guide to mining Pearl L1 (PRL, 
 language: [en, zh]
 updated: 2026-09-27
 tags: [pearl, prl, pouw, gpu-mining, wsl, rtx-5080, kryptex, peakminer, crypto]
-status: field-tested on RTX 5080 / WSL2, PeakMiner 2.16.5 + Kryptex, 2026-09-27
+status: field-tested on RTX 5080 / WSL2, PeakMiner 2.17.2 + Kryptex, 2026-09-27
 -->
 
 # Pearl (PRL) GPU Mining Guide — WSL Edition
@@ -66,7 +66,7 @@ Prerequisites: Windows 11 + WSL2 (Ubuntu) + up-to-date **NVIDIA Windows driver**
 | Item / 项 | Value / 值 |
 |---|---|
 | Chain / 链 | Pearl L1, Proof-of-Useful-Work (matrix-mul); addresses `prl1p…` (bech32m) |
-| Miner / 矿工 | PeakMiner 2.16.5, tmux session `pearl`, worker name of your choice. On-disk SHA256 of `peakminer-2.16.5-linux-x86_64`: `5dc4b927fb91442a66a2e02c1636f629d4042a03a5c1523cd841d6ece66e0beb` |
+| Miner / 矿工 | PeakMiner 2.17.2, tmux session `pearl`, directory `~/pearl-mining/peakminer-2.17.2`. SHA256 of `peakminer-2.17.2-linux-x86_64` (publisher release note, checked on the rig): `37a316a05d6ffb6293a6e28d707c90909020b53193f723e557faa09d721abf82`. The 2.16.5 tree is still on disk and is not the running miner |
 | Pool / 矿池 | Kryptex PPS+ **2%** (SOLO 1%). Stratum tried in order: `prl-hk.kryptex.network:7048`, `prl-sg.kryptex.network:7048`, `prl.kryptex.network:7048`. Username `prl1p<your-address>/worker` |
 | Pool payout / 矿池打款 | Automatic, about hourly, once **confirmed** balance ≥ threshold. Minimum and default threshold **1 PRL**. Matures after **100 blocks** (~194 s target). Kryptex pays the tx fee. No manual withdraw |
 | Miner dev fee / 矿工抽成 | PeakMiner **2%**, separate from the pool fee |
