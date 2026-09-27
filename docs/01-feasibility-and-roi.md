@@ -10,6 +10,9 @@ tags: [roi, feasibility, electricity, rtx-3090, rtx-4090]
 
 > ⚠️ Snapshot 2026-05-31, conservative public-data basis. The decisive variable is **not** hashrate but **whether you can actually sell the mined PRL** — see [03 · Tokens & cash-out](03-tokens-and-cashout.md).
 > ⚠️ 2026-05-31 快照、保守公开数据口径。决定性变量**不是**算力，而是**挖到的 PRL 能不能真卖出去**——见 [03 · 代币与变现](03-tokens-and-cashout.md)。
+>
+> The tables below are the **RTX 3090 + AlphaPool** study. Since 2026-09 the live rig is an **RTX 5080** on **Kryptex PPS+ (pool fee 2%)** with **PeakMiner (dev fee 2%)**. Do not reuse the 7–8 PRL/day or 5%+1% fee figures for that rig. Operating steps are in [02](02-deployment-runbook.md).
+> 下面的表是 **RTX 3090 + AlphaPool** 的研究。2026-09 起在跑的是 **RTX 5080**，矿池 **Kryptex PPS+（池费 2%）**，矿工 **PeakMiner（开发费 2%）**。不要把当时的每天 7–8 PRL、或 5%+1% 费率套到这台机器上。操作步骤见 [02](02-deployment-runbook.md)。
 
 ## TL;DR / 一句话结论
 - **Rented GPUs**: marginal-to-loss at typical rental prices. Don't enter via rental.

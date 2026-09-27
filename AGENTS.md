@@ -2,7 +2,7 @@
 title: AGENTS.md — context & conventions for AI agents
 description: Machine-oriented brief so an AI coding agent can safely continue this Pearl (PRL) mining project without re-discovering the gotchas.
 language: [en, zh]
-updated: 2026-05-31
+updated: 2026-09-27
 -->
 
 # AGENTS.md
@@ -24,11 +24,20 @@ A documentation-only, field-tested guide to mining **Pearl L1 (native PRL)** on 
 4. **Token disambiguation is the #1 correctness issue**: mined PRL = *Pearl Research L1* ≠ Binance *Perle (PRL)*. Never conflate them. See [docs/03](docs/03-tokens-and-cashout.md).
    **代币辨析是第一正确性问题**：挖的 PRL = *Pearl Research L1* ≠ 币安 *Perle (PRL)*。绝不混为一谈。
 
-## Verified facts (snapshot 2026-05-31) / 已验证事实
-- Miner: `alpha-miner` v1.7.6-beta, SHA256 `c84396e2ff4ded14a8c83cd253761b46dd40927c5c43a39a20aac9ff8bdfbfe5`.
-- Wallet CLI (linux-amd64, in wallet v1.0.0 release): SHA256 `56ae87bdd2913ae8e030d32e820240696cce41cbda4b84bfd5a4968196565a47`.
+## Verified facts (live rig, 2026-09-27) / 已验证事实
+- Miner: PeakMiner **2.16.5** in tmux session `pearl`, started by `~/pearl-mining/peakminer-2.16.5/run-kryptex.sh`. On-disk SHA256 of `peakminer-2.16.5-linux-x86_64`: `5dc4b927fb91442a66a2e02c1636f629d4042a03a5c1523cd841d6ece66e0beb`. Kryptex's worker API that day also advertised a newer agent string `peakminer/2.17.2`; 2.16.5 was still accepting shares.
+- Pool: Kryptex Pearl, PPS+ fee **0.02**, SOLO **0.01**, `minpay`/`defpay` **1 PRL**, `blocks_for_maturation` **100**, `block_time` **194**. `GET https://pool.kryptex.com/prl/api/v1/pool/info`. Balance: `GET https://pool.kryptex.com/prl/api/v1/miner/balance/<address>` → `confirmed`, `unconfirmed`, `threshold`. Payouts are automatic; there is no manual withdraw in the happy path.
+- Stratum order used on this rig: `prl-hk.kryptex.network:7048`, then `prl-sg`, then `prl.kryptex.network:7048`. Username `prl1p<your-address>/<worker>`. Local API `http://127.0.0.1:4068/summary`.
+- Wallet CLI on the rig: `oyster` / `prlctl` **1.1.0** in `~/pearl-wallet`. SHA256: oyster `96c8ef4df4cf3e52a865f57af8f6cb5cba7a7ebd1d1e3d768a711d06510c0165`, prlctl `c39d0fd701c5c8857d2740d075745cc07bb3d2ceb9ed191265c2da6ab3179e0b`. Sending requires `prlctl … --wallet sendtoaddress`. Mining does not need the wallet online.
 - Ports: P2P `44108`, wallet RPC `44207`, node RPC `44107`. `1 PRL = 1e8 grain`.
-- Pool API (Cloudflare-cached, may lag): `GET https://pearl.alphapool.tech/api/miner/<address>` → fields `balance_prl`, `total_paid_prl`, `workers[].online`, `shares24h`.
+- On-chain balance (no wallet required): `GET https://pearltrack.io/api/v1/address/<address>` → `balancePrl`, `totalReceivedPrl`, `totalSentPrl`.
+- Stop the miner with `tmux kill-session -t pearl` or an exact PID. Do not `pkill -f` a pattern that also appears in the remote shell command line.
+- `--gpu-fan` is skipped without root NVML. Passwordless sudo is unavailable.
+
+## Historical facts (do not treat as the live path) / 历史事实
+- AlphaMiner `alpha-miner` v1.7.6-beta, SHA256 `c84396e2ff4ded14a8c83cd253761b46dd40927c5c43a39a20aac9ff8bdfbfe5`. AlphaPool did not credit this build on the RTX 5080; a later AlphaMiner 1.9.5.2 existed and was then retired.
+- Wallet tarball originally documented: linux-amd64 from wallet v1.0.0, SHA256 `56ae87bdd2913ae8e030d32e820240696cce41cbda4b84bfd5a4968196565a47`.
+- Retired pool API: `GET https://pearl.alphapool.tech/api/miner/<address>` → `balance_prl`, `total_paid_prl`, `workers[].online`, `shares24h`. PPLNS: unpaid balance is not spendable until that pool pays it.
 
 ## Known gotchas (already solved here) / 已解决的坑
 - **WSL DNS** cannot resolve `x49.seederN.pearlresearch.ai` (returns "no such host"), so wallet SPV peer discovery fails. Fix: start `oyster` with `--usespv` + several `--addpeer=<IP>` from the base `seeder1.pearlresearch.ai` (which DOES resolve publicly; peers listen on `44108`).
@@ -39,6 +48,8 @@ A documentation-only, field-tested guide to mining **Pearl L1 (native PRL)** on 
   建钱包时对 "additional layer of encryption for public data" 回答 **n**，否则启动要带 `--walletpass`。
 - `nvidia-smi` is not on PATH in WSL; it lives at `/usr/lib/wsl/lib/nvidia-smi`. The miner uses `libcuda.so` directly (Windows driver), so no Linux CUDA install is needed.
   WSL 里 `nvidia-smi` 不在 PATH，在 `/usr/lib/wsl/lib/nvidia-smi`。矿工直接调 `libcuda.so`，无需在 Linux 装 CUDA。
+- Kryptex pays the wallet by itself. A confirmed balance under 1 PRL is not paid, and Kryptex's own article says an inactive wallet's pool balance is wiped after 90 days. Cash-out starts from coins already in the `prl1p…` wallet, not from a pool "withdraw" button.
+  Kryptex 会自己打款。确认余额不到 1 PRL 不会打出；Kryptex 自己的文章写，不活跃钱包的矿池余额 90 天后清除。变现从已经进 `prl1p…` 钱包的币开始，不是按矿池上的提现按钮。
 
 ## Conventions / 约定
 - All docs are bilingual (English + 中文) with YAML-ish HTML-comment frontmatter at the top.

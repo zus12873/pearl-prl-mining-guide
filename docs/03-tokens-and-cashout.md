@@ -2,30 +2,96 @@
 title: Token disambiguation & cash-out — turning mined PRL into money
 description: Why mined Pearl PRL is not the Binance PRL, the CEX route via SafeTrade (PRL/USDT, 0.1% fee, native deposit, USDT-TRC20 out — the cheapest path to Binance), the bridge→WPRL→DEX/OTC alternatives, a full fee comparison (SafeTrade vs lordofpearls vs pearl-otc vs bridge), the Ethereum gas math behind withdrawal cost, and the "how much to accumulate before cashing out" break-even.
 language: [en, zh]
-updated: 2026-06-06
-tags: [cashout, safetrade, cex, trc20, wprl, bridge, otc, uniswap, gas, perle, disambiguation]
+updated: 2026-09-27
+tags: [cashout, safetrade, kryptex, cex, trc20, wprl, bridge, otc, uniswap, gas, perle, disambiguation]
 -->
 
 # 03 · Tokens & cash-out / 代币辨析与变现
 
-> ⚠️ This page contains the single most expensive mistake to avoid: **do not send mined PRL to an exchange.** / 本页含最贵的一个错误：**绝不要把挖到的 PRL 充到交易所。**
+> ⚠️ The expensive mistake: **do not send native PRL to a deposit address that is not `prl1p…`.** SafeTrade's Pearl deposit is a `prl1p…` address. Binance / OKX / Gate / Bitget / MEXC "PRL" deposits are not this coin.
+> ⚠️ 最贵的错误：**不要把原生 PRL 充到不是 `prl1p…` 的地址。** SafeTrade 的 Pearl 充值地址是 `prl1p…`。币安 / 欧易 / Gate / Bitget / MEXC 的 “PRL” 充值不是这枚币。
 
 ## 1. There are several "PRL" — don't confuse them / "PRL" 有好几个，别混
 
 | Token / 代币 | What / 是什么 | Where / 在哪 |
 |---|---|---|
-| **Pearl Research (PRL)** ← *you mine this* / *你挖的是这个* | Native coin of Pearl L1 (PoUW); addresses `prl1p…` | No CEX. Only via WPRL on a DEX / 无 CEX，只能桥成 WPRL 上 DEX |
+| **Pearl Research (PRL)** ← *you mine this* / *你挖的是这个* | Native coin of Pearl L1 (PoUW); addresses `prl1p…` | SafeTrade PRL/USDT is the path this rig has completed. A deposit address that is not `prl1p…` is the wrong asset |
 | **Perle (PRL)** | A different project on Solana | Was on Binance, **delisted 2026-04-28** / 曾在币安，**已下架** |
 | Scam clones / 山寨 | Same-ticker tokens on DEXes (e.g. Base) | Avoid / 避开 |
 
 **Rule / 铁律:** ticker alone is meaningless. Verify project + chain + contract address every time. A "price page" on CoinGecko/Coinbase ≠ a CEX actually trading or accepting deposits of your coin.
 **铁律：** 只看 ticker 没意义，每次都要核对项目+链+合约。CoinGecko/Coinbase 上有"价格页" ≠ CEX 真在交易或能充提你的币。
 
-## 2. The only CEX is SafeTrade — NOT Binance/OKX/etc. / 唯一的 CEX 是 SafeTrade——不是币安/欧易
-As of 2026-06-06, native Pearl PRL (pearlresearch.ai, CoinGecko-confirmed) **is listed on exactly one CEX: SafeTrade** (`safetrade.com`, PRL/USDT, ~$0.75, ~99.8% of all PRL volume). It is **still NOT on Binance/OKX/Gate/Bitget/MEXC**. Sending native PRL to a *major* exchange's "PRL" deposit address = wrong project/chain = **permanent loss**.
-截至 2026-06-06，原生 Pearl PRL（官网 pearlresearch.ai，经 CoinGecko 核实）**只上了一个 CEX：SafeTrade**（PRL/USDT，~$0.75，占全网 ~99.8% 成交量）。它**仍未上币安/欧易/Gate/Bitget/MEXC**。把原生 PRL 充到**主流**交易所的 "PRL" 地址 = 错项目/错链 = **永久丢币**。
+## 2. SafeTrade is the completed path — not Binance/OKX/etc. / 跑通过的是 SafeTrade——不是币安/欧易
+On 2026-06-09 this wallet sent native PRL to SafeTrade (`safetrade.com`, pair PRL/USDT), sold it, and withdrew USDT on TRC-20. That is the path to repeat. Binance, OKX, Gate, Bitget and MEXC do not take this coin's `prl1p…` deposits. Sending to their "PRL" address is a different project or no project = **permanent loss**.
+2026-06-09 这个钱包把原生 PRL 充进了 SafeTrade（交易对 PRL/USDT），卖掉后用 TRC-20 提出 USDT。要重复的是这条。币安、欧易、Gate、Bitget、MEXC 不收这枚币的 `prl1p…` 充值。充到它们的 “PRL” 地址 = 另一个项目或根本没有 = **永久丢币**。
+
+Aggregator pages in September 2026 also print BigONE `PRL/USDT` and CoinEx `PEARL/USDT`. This repo has not completed a deposit on either. CoinEx's ticker is a different spelling. Do not use them unless that exchange's deposit screen shows a `prl1p…` address and you have sent a tiny test that credited.
+2026 年 9 月的行情站还列出 BigONE 的 `PRL/USDT` 和 CoinEx 的 `PEARL/USDT`。这两家本仓库都没有跑通过。CoinEx 的代号拼法就不一样。除非那家的充值页给出 `prl1p…` 地址，并且一笔小额测试已经入账，否则不要用。
 
 > ⚠️ SafeTrade is a **small custodial exchange** — only park PRL there during "deposit → sell → withdraw", then move the USDT out immediately. Don't store balances on it. / SafeTrade 是**小型托管交易所**——只在"充→卖→提"期间短暂存放，卖完立刻把 USDT 提走，不要久放。
+
+## 2.1 What you actually do / 实际要做的操作
+
+Two different balances. Only the second one can be sold.
+有两笔不同的余额。只有第二笔能拿去卖。
+
+| Where / 在哪 | What it is / 是什么 | What you do / 怎么处理 |
+|---|---|---|
+| Kryptex `confirmed` / `unconfirmed` | Pool accounting. Not in your wallet until a payout txid exists | Nothing, if `confirmed` ≥ 1 PRL: the pool sends it within about an hour. If it is under 1 PRL, keep mining. See [02 §E](02-deployment-runbook.md) |
+| `balancePrl` on pearltrack, or `getbalance` in the wallet | Coins you already hold | This is the cash-out |
+
+```bash
+curl -s "https://pearltrack.io/api/v1/address/prl1p<your-address>"
+curl -s "https://pool.kryptex.com/prl/api/v1/miner/balance/prl1p<your-address>"
+```
+
+### Send from the wallet / 从钱包转出
+
+The mining wallet can stay offline while hashing. It has to be online to sign a send. Use the same `oyster` start as [02 §B3](02-deployment-runbook.md), wait until it is synced, then in a second terminal:
+挖矿时钱包可以关着。签名转账时必须开着。按 [02 §B3](02-deployment-runbook.md) 启动 `oyster`，等同步完，另开一个终端：
+
+```bash
+cd ~/pearl-wallet
+./prlctl -u <rpc-user> -P '<rpc-pass>' -s localhost:44207 --notls --wallet getbalance
+```
+
+On SafeTrade, open the Pearl (pearlresearch.ai) deposit screen. Copy the address only after you see it starts with `prl1p`. Then send a **test** (2 PRL is the amount that was used here on 2026-06-09):
+在 SafeTrade 打开 Pearl（pearlresearch.ai）充值页。看到地址以 `prl1p` 开头再复制。先转一笔**测试**（2026-06-09 用的是 2 PRL）：
+
+```bash
+./prlctl -u <rpc-user> -P '<rpc-pass>' -s localhost:44207 --notls --wallet \
+  sendtoaddress "prl1p<exchange-deposit>" 2
+```
+
+`--wallet` is required; without it `sendtoaddress` is not a wallet command. If the wallet answers that it is locked, unlock it locally for a few minutes and send immediately:
+必须带 `--wallet`，否则 `sendtoaddress` 不是钱包命令。如果钱包回复已锁定，就在本机解锁几分钟并马上转出：
+
+```bash
+./prlctl -u <rpc-user> -P '<rpc-pass>' -s localhost:44207 --notls --wallet \
+  walletpassphrase '<the-passphrase-you-set-at-create>' 300
+```
+
+Type that passphrase yourself on the rig. Do not put it in this repo, in a script that gets committed, or in chat. After the test credits, repeat `sendtoaddress` for the amount you want to sell and leave the dust. The June sends cost `0.0000155` and `0.0001945` PRL in chain fees.
+口令在矿机上自己输入。不要写进本仓库、不要写进会被提交的脚本、不要贴进聊天。测试入账后，再 `sendtoaddress` 你准备卖的数量，零头留着。6 月那两笔链上费是 `0.0000155` 和 `0.0001945` PRL。
+
+SafeTrade credited after **20 confirmations** (~20–40 min that day). Read the deposit page again; do not assume the number is still 20.
+SafeTrade 当时是 **20 个确认**后入账（那天约 20–40 分钟）。再看一眼充值页，不要默认还是 20。
+
+The official Pearl desktop wallet can do the same send. The CLI on this rig reports `oyster` / `prlctl` 1.1.0. A 2.0.0 archive is downloaded there and was not the binary those version strings came from.
+官方 Pearl 桌面钱包也能转。这台机器上的 CLI 是 `oyster` / `prlctl` 1.1.0。旁边有一份下好的 2.0.0 压缩包，但现在跑的不是它。
+
+### Sell and leave / 卖掉就走
+
+1. Sell **PRL/USDT with limit orders**, in more than one clip if the book is thin. The 2026-06-09 market sell filled about **0.52 USDT** against a higher quoted price. The fee was 0.1%. The loss was the fill, not the fee.
+   用**限价单**卖 PRL/USDT。盘口薄就拆开。2026-06-09 的市价单成交约 **0.52 USDT**，低于当时标价。手续费 0.1%。少拿的是成交价，不是手续费。
+2. Withdraw **USDT on TRC-20** to an exchange that actually holds your USDT (Binance credited TRC-20 USDT with no deposit fee that day). The measured withdrawal fee was **~0.08 USDT**. Confirm the live fee and the network name `TRC20` / `Tron` before you confirm.
+   把 **USDT 走 TRC-20** 提到真正收你 USDT 的交易所（那天币安对 TRC-20 USDT 免充值费）。实测提现费 **约 0.08 USDT**。确认前核对当时的费用和网络名 `TRC20` / `Tron`。
+3. SafeTrade is a small custodial exchange. Do not leave a balance there after the USDT is out.
+   SafeTrade 是小型托管交易所。USDT 提出去之后不要把余额留在上面。
+
+A quoted PRL price (pearltrack showed about $1.45 on 2026-09-27; other tickers the same day were in a wide band) is not the fill you will get. Recompute take-home from the USDT that arrives.
+标价（2026-09-27 pearltrack 大约 $1.45；同一天别的行情源差得很多）不是你的成交价。用到账的 USDT 复算到手。
 
 ## 3. Cash-out paths / 变现路径
 
@@ -88,7 +154,7 @@ A full end-to-end run, measured (not estimated). Native PRL mined on the rig →
 - **Fee wear was tiny (~0.4%)** — 0.1% trade + ~0.08 USDT withdrawal. The SafeTrade route is genuinely cheap; TRC-20 withdrawal was ~`0.08 USDT`, not the ~`$1` first assumed. / **费用磨损仅 ~0.4%**——路子确实省，TRC-20 提现费远低于预想。
 - **The real value gap was the FILL PRICE**: `0.52` realized vs the `~0.68` WPRL/DEX reference — a thin-book market sell ate the bid down. The cost was *price impact, not fees.* / **真正少拿的是成交价**（0.52 vs 参考 0.68），薄盘市价卖把买盘吃穿了——代价是**价格冲击，不是手续费**。
 - Even at `0.52`, this small batch still beat bridge→DEX (where `0.68 × 46 ≈ $31` would be gutted by `$10–20` Ethereum gas → ~`$11–21`). For small sizes, **low fees beat a higher headline price.** / 即便 0.52，这点量仍胜过过桥→DEX（标价 0.68 但被以太坊 gas 吃掉）——小额下"费低"压倒"价高"。
-- **Next time:** sell with patient **limit orders in smaller chunks** (don't market-dump a thin book), and accumulate **100–200 PRL per batch** to amortize the fixed costs further. / **下次**：挂限价、分批卖，别市价砸薄盘；攒到 100–200 个一批更划算。
+- **Next time:** sell with patient **limit orders in smaller chunks** (don't market-dump a thin book). The June note to wait for 100–200 PRL was about amortizing a fee that, once measured, was ~0.08 USDT — see §2.1 and §7. / **下次**：挂限价、分批卖，别市价砸薄盘。6 月写的“攒到 100–200 再卖”是为了摊一笔后来实测只有 ~0.08 USDT 的费用——见 §2.1 和 §7。
 
 ## 6. Ethereum gas — how withdrawal cost is computed / 提现 gas 怎么算
 ```
@@ -110,20 +176,20 @@ Fixed costs (gas) don't scale with amount, so cash out in batches where **fixed 
 
 | Route / 通道 | Fixed cost / 固定成本 | Worthwhile batch / 划算批量 | ≈ PRL | @7–8 PRL/day |
 |---|---|---|---|---|
-| **★ SafeTrade (0.1% + TRC-20)** | **~$1** (flat) | ≥ $35–70 | **~50–100 PRL** | **~1 week** |
+| **★ SafeTrade (0.1% + TRC-20)** | **~0.08 USDT measured** | a test, then the rest | whatever is already in the wallet | not fee-bound |
 | lordofpearls (1.8% + ETH gas) | ~$2–6 (×2 to forward) | ≥ $150–250 | ~200–330 PRL | ~1 month |
 | pearl-otc (2% + Arbitrum) | ~$0.1–0.5 (negligible) | min-bound | **≥1,000 PRL** | ~4–5 months |
 | bridge → Uniswap | ~$10–30 + slippage | ≥ $500–1,000 | ~700–1,300 PRL | 3–5 months |
 
-**Trade-off / 权衡:** bigger batch = lower fixed-cost %, but longer hold = more price risk on a volatile, declining, illiquid coin. SafeTrade's tiny `~$1` fixed cost collapses the break-even to **~50–100 PRL (≈ a week's mining)**, so you can cash out **early and often** to hedge the §4 sell-pressure price risk — far better than waiting a month for an OTC or months for pearl-otc's 1,000 PRL floor. Only watch the **order-book depth**: sell 200+ PRL with a limit order, not a market dump.
-**权衡：** 批量越大固定成本占比越低，但持有越久越扛价格风险。SafeTrade 的 `~$1` 固定成本把回本点压到 **~50–100 PRL（约一周产量）**,所以可以**早提勤提**对冲第 4 节的抛压价格风险——远好于等一个月走 OTC、或等几个月凑 pearl-otc 的 1000 PRL 门槛。唯一要看的是**订单簿深度**:卖 200+ 个挂限价单,别市价砸盘。
+**Trade-off / 权衡:** the TRC-20 fee measured in June was ~0.08 USDT, so waiting to "accumulate a week's mining" is no longer what makes the SafeTrade path worth it. Sell coins that are already in the wallet when you want them sold. Still use a **limit order**. The 7–8 PRL/day column above is the May 2026 RTX 3090 / AlphaPool case.
+**权衡：** 6 月实测的 TRC-20 费用大约 0.08 USDT，所以不必再为了摊薄手续费而攒满一周。钱包里已经有的币，想卖就可以卖。仍然用**限价单**。上面每天 7–8 PRL 那一列是 2026 年 5 月 RTX 3090 / AlphaPool 的情况。
 
 ## 8. Safety checklist / 安全清单
-- ❌ Never send native PRL to a **major** exchange (Binance/OKX/Gate/Bitget/MEXC) "PRL" address — they list a *different* PRL or none = loss. **Only SafeTrade** lists the native pearlresearch.ai PRL (verify its deposit address is `prl1p…` before sending). / 绝不把原生 PRL 充**主流**交易所（币安/欧易/Gate/Bitget/MEXC）的 "PRL" 地址——它们上的是*别的* PRL 或根本没有 = 丢币。**只有 SafeTrade** 上的是 pearlresearch.ai 原生 PRL（充值前确认其地址是 `prl1p…`）。
+- ❌ Never send native PRL to a Binance/OKX/Gate/Bitget/MEXC "PRL" address — that is a different asset or no deposit = loss. On SafeTrade, and on any other site, send only after the deposit address shown is `prl1p…`. / 绝不把原生 PRL 充到币安/欧易/Gate/Bitget/MEXC 的 “PRL” 地址——那是别的资产或根本充不进去 = 丢币。SafeTrade 以及其他任何网站，都要等充值地址显示为 `prl1p…` 再转。
 - ❌ Never enter your seed/mnemonic into any website, bot, extension, or chat. Bridges/DEX only need wallet *connect + sign*. / 绝不把助记词输入任何网站/机器人/插件/聊天；桥和 DEX 只需钱包"连接+签名"。
 - ✅ Verify the bridge URL and WPRL contract address against Pearl's official channels (ticker collision + phishing are rampant). / 逐字核对桥地址与 WPRL 合约（同名币+钓鱼泛滥）。
 - ✅ Test the whole path with a tiny amount first; recompute real take-home from the actual USDC received, not the quoted price. / 先用小额跑通整条链路；用实际收到的 USDC 复算真实到手，别用标价。
-- ✅ To manage native PRL with a GUI, use the **official Pearl desktop wallet** (`Pearl-Wallet-Setup-1.0.0.exe`), not a generic multi-chain wallet (which can't derive `prl1p…` addresses). / 想用图形界面管原生 PRL，用**官方 Pearl 桌面钱包**，别用通用多链钱包（它推导不出 `prl1p…` 地址）。
+- ✅ To manage native PRL with a GUI, use the **official Pearl desktop wallet**, not a generic multi-chain wallet (which can't derive `prl1p…` addresses). The CLI on this rig is `oyster` / `prlctl` 1.1.0. / 想用图形界面管原生 PRL，用**官方 Pearl 桌面钱包**，别用通用多链钱包（它推导不出 `prl1p…` 地址）。这台机器上的 CLI 是 `oyster` / `prlctl` 1.1.0。
 
 ---
 
