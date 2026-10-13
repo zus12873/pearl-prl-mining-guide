@@ -88,8 +88,8 @@ A successful send prints only the txid. On 2026-10-13, 30 PRL at fee rate `0.000
 SafeTrade credited after **20 confirmations** (~20–40 min that day). Read the deposit page again; do not assume the number is still 20.
 SafeTrade 当时是 **20 个确认**后入账（那天约 20–40 分钟）。再看一眼充值页，不要默认还是 20。
 
-The official Pearl desktop wallet can do the same send. The CLI on this rig reports `oyster` / `prlctl` 1.1.0. A 2.0.0 archive is downloaded there and was not the binary those version strings came from.
-官方 Pearl 桌面钱包也能转。这台机器上的 CLI 是 `oyster` / `prlctl` 1.1.0。旁边有一份下好的 2.0.0 压缩包，但现在跑的不是它。
+The official Pearl desktop wallet can do the same send. The CLI on this rig is `oyster` / `prlctl` 1.4.1 from release pearl-wallet-v2.0.5 (checked 2026-10-13). The June sends used CLI 1.0.2. An older CLI stops syncing at a hardfork and then shows a stale `getbalance`. Upgrade first, as in [02 §B1](02-deployment-runbook.md).
+官方 Pearl 桌面钱包也能转。这台机器上的 CLI 是发行版 pearl-wallet-v2.0.5 里的 `oyster` / `prlctl` 1.4.1（2026-10-13 核对）。6 月那两笔用的是 CLI 1.0.2。旧版 CLI 会在硬分叉处停止同步，`getbalance` 显示的是过时数字。先按 [02 §B1](02-deployment-runbook.md) 升级。
 
 ### Sell and leave / 卖掉就走
 
@@ -199,7 +199,7 @@ Fixed costs (gas) don't scale with amount, so cash out in batches where **fixed 
 - ❌ Never enter your seed/mnemonic into any website, bot, extension, or chat. Bridges/DEX only need wallet *connect + sign*. / 绝不把助记词输入任何网站/机器人/插件/聊天；桥和 DEX 只需钱包"连接+签名"。
 - ✅ Verify the bridge URL and WPRL contract address against Pearl's official channels (ticker collision + phishing are rampant). / 逐字核对桥地址与 WPRL 合约（同名币+钓鱼泛滥）。
 - ✅ Test the whole path with a tiny amount first; recompute real take-home from the actual USDC received, not the quoted price. / 先用小额跑通整条链路；用实际收到的 USDC 复算真实到手，别用标价。
-- ✅ To manage native PRL with a GUI, use the **official Pearl desktop wallet**, not a generic multi-chain wallet (which can't derive `prl1p…` addresses). The CLI on this rig is `oyster` / `prlctl` 1.1.0. / 想用图形界面管原生 PRL，用**官方 Pearl 桌面钱包**，别用通用多链钱包（它推导不出 `prl1p…` 地址）。这台机器上的 CLI 是 `oyster` / `prlctl` 1.1.0。
+- ✅ To manage native PRL with a GUI, use the **official Pearl desktop wallet**, not a generic multi-chain wallet (which can't derive `prl1p…` addresses). The CLI on this rig is `oyster` / `prlctl` 1.4.1. / 想用图形界面管原生 PRL，用**官方 Pearl 桌面钱包**，别用通用多链钱包（它推导不出 `prl1p…` 地址）。这台机器上的 CLI 是 `oyster` / `prlctl` 1.4.1。
 
 ---
 

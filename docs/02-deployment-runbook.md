@@ -48,20 +48,30 @@ The official wallet is a CLI: `oyster` (daemon, holds keys/signs) + `prlctl` (co
 官方钱包是 CLI：`oyster`（守护进程，存私钥/签名）+ `prlctl`（控制）+ `pearld`（全节点，这里用不到）。来源：GitHub `pearl-research-labs/pearl`。
 
 ### B1. Download + checksum-verify / 下载 + 校验
+The rig runs wallet release **pearl-wallet-v2.0.5** (published 2026-08-11). Its CLI binaries report `Version 1.4.1` in `~/.oyster/logs/mainnet/oyster.log`. Older CLI builds stop syncing at the hardforks: 1.0.2 at certificate v2 (June), and 1.1.0 at certificate v3 (height 98986, after the 2026-08-11 hardfork).
+矿机跑的是钱包发行版 **pearl-wallet-v2.0.5**（2026-08-11 发布），CLI 在 `~/.oyster/logs/mainnet/oyster.log` 里报 `Version 1.4.1`。更老的 CLI 会在硬分叉处停止同步：1.0.2 卡在 certificate v2（6 月），1.1.0 卡在 certificate v3（高度 98986，2026-08-11 硬分叉之后）。
+
 ```bash
 mkdir -p ~/pearl-wallet && cd ~/pearl-wallet
-curl -fL -o pearl-cli.tar.gz \
-  https://github.com/pearl-research-labs/pearl/releases/download/pearl-wallet-v1.0.0/go-binaries-linux-amd64-v1.0.2.tar.gz
+curl -fL -o go-binaries-linux-amd64-2.0.5.tar.gz \
+  https://github.com/pearl-research-labs/pearl/releases/download/pearl-wallet-v2.0.5/go-binaries-linux-amd64-2.0.5.tar.gz
 
-# Verify (expected SHA256 for linux-amd64 v1.0.2):
-EXPECT=56ae87bdd2913ae8e030d32e820240696cce41cbda4b84bfd5a4968196565a47
-GOT=$(sha256sum pearl-cli.tar.gz | cut -d' ' -f1)
+# Verify (expected SHA256 for linux-amd64 2.0.5; same as the release's checksums.txt and GitHub asset digest):
+EXPECT=3d0d4f1f45c836bf19aef070817efbf4cf0b6908b7fc9abd9d0e9bfc6caea117
+GOT=$(sha256sum go-binaries-linux-amd64-2.0.5.tar.gz | cut -d' ' -f1)
 [ "$GOT" = "$EXPECT" ] && echo "✅ OK" || echo "❌ MISMATCH — STOP"
 
-tar -xzf pearl-cli.tar.gz
-find . -type f \( -name oyster -o -name prlctl -o -name pearld \)   # locate binaries
+tar -xzf go-binaries-linux-amd64-2.0.5.tar.gz    # extracts ./oyster ./prlctl ./pearld
+sha256sum oyster prlctl pearld
+# oyster 3376a6818ff4d4f1bc79bd4ecd09f5fd9d22fc08f38ffd666791d169c22dc451
+# prlctl 929f1e2b58e3c56c620279d32994f5f4bbfa4aae377436856fb96543c49cd84d
+# pearld 388defd3544d1169e1bd6c6cce3487f1eed8e57193c322d70c3fc81629f76c95
 ```
-> ✅ Verify: `✅ OK`, and `oyster`/`prlctl`/`pearld` exist (in `~/pearl-wallet`). If they're in a subdir, adjust `./` paths below.
+> ✅ Verify: `✅ OK`, and the three binary hashes match. Those are the files installed on the rig (checked 2026-10-13).
+> ✅ 验证：输出 `✅ OK`，三个二进制的哈希一致。这就是矿机上装的文件（2026-10-13 核对）。
+
+Upgrading an existing wallet: stop `oyster` by its exact PID, copy the old binaries and `~/.oyster/` to a backup folder, put the new binaries in place, and start `oyster` with the same command. A newer **pearl-wallet-v2.0.7** (2026-09-30) also carries the pearlnetwork.net seeders. This rig has not run it.
+升级已有钱包：按确切 PID 停掉 `oyster`，把旧二进制和 `~/.oyster/` 拷到备份目录，换上新二进制，用原来的命令重新启动 `oyster`。更新的 **pearl-wallet-v2.0.7**（2026-09-30）已内置 pearlnetwork.net 种子，这台矿机还没跑过。
 
 ### B2. Create the wallet (you hold the secret) / 创建钱包（密钥你保管）
 ```bash

@@ -70,7 +70,7 @@ Prerequisites: Windows 11 + WSL2 (Ubuntu) + up-to-date **NVIDIA Windows driver**
 | Pool / 矿池 | Kryptex PPS+ **2%** (SOLO 1%). Stratum tried in order: `prl-hk.kryptex.network:7048`, `prl-sg.kryptex.network:7048`, `prl.kryptex.network:7048`. Username `prl1p<your-address>/worker` |
 | Pool payout / 矿池打款 | Automatic, about hourly, once **confirmed** balance ≥ threshold. Minimum and default threshold **1 PRL**. Matures after **100 blocks** (~194 s target). Kryptex pays the tx fee. No manual withdraw |
 | Miner dev fee / 矿工抽成 | PeakMiner **2%**, separate from the pool fee |
-| Wallet CLI / 钱包 | `oyster` / `prlctl` 1.1.0 under `~/pearl-wallet`. Mining does not need it online. Sending coins does |
+| Wallet CLI / 钱包 | `oyster` / `prlctl` 1.4.1 (release pearl-wallet-v2.0.5) under `~/pearl-wallet`. Mining does not need it online. Sending coins does |
 | Ports / 端口 | P2P `44108`, wallet RPC `44207`, node RPC `44107`. PeakMiner local API `127.0.0.1:4068` |
 | Units / 单位 | `1 PRL = 100,000,000 grain` |
 | RTX 5080 sample / 样例 | 2026-09-27 restart: ~218 TH/s, ~360 W, ~75°C, fan on the driver curve. One earlier session median was ~230 TH/s. Not a yield promise |
