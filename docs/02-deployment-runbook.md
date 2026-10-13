@@ -2,7 +2,7 @@
 title: Deployment runbook — Pearl mining on WSL2 + NVIDIA GPU
 description: Verified step-by-step for the live rig — WSL GPU, wallet, PeakMiner 2.17.2 on Kryptex in tmux, local and pool monitoring, and how pool payouts reach the wallet. The May 2026 AlphaMiner/AlphaPool steps are an appendix.
 language: [en, zh]
-updated: 2026-09-27
+updated: 2026-10-13
 tags: [runbook, wsl, peakminer, kryptex, oyster, prlctl, tmux, spv]
 verified: RTX 5080 / WSL2 Ubuntu / PeakMiner 2.17.2 + Kryptex / 2026-09-27
 -->
@@ -80,14 +80,18 @@ Answer the prompts / 按提示回答：
 > 🔐 `<rpc-user>/<rpc-pass>` 只是本机 RPC 账号密码（仅 127.0.0.1），**不是**助记词。助记词+私钥口令才是资金安全的关键。助记词一旦暴露即视为泄露：`rm -rf ~/.oyster` 重建。
 
 ### B3. Start the wallet — with the WSL DNS workaround / 启动钱包（含 WSL DNS 绕坑）
-`getnewaddress` needs an active chain backend. WSL's default DNS **cannot resolve** the seeder subdomains `x49.seederN.pearlresearch.ai`, so SPV peer discovery fails. **Fix: feed peer IPs directly** (the base `seeder1.pearlresearch.ai` resolves publicly; peers listen on `44108`).
-`getnewaddress` 需要活跃的链后端。WSL 默认 DNS **解析不了** seeder 子域 `x49.seederN.pearlresearch.ai`，导致 SPV 找不到节点。**解法：直接喂节点 IP**（基础域 `seeder1.pearlresearch.ai` 能解析；节点端口 `44108`）。
+`getnewaddress` needs an active chain backend. The mainnet DNS seeders moved to `reef` / `tide` / `stream` `.seeder.pearlnetwork.net` (pearl `node/chaincfg/params.go`, #309 and #346). The old `seeder1/2/3.pearlresearch.ai` and their `x49.` subdomains return NXDOMAIN as of 2026-10-13. Wallet releases before **pearl-wallet-v2.0.7** (including v2.0.5 / `oyster` 1.4.1) still look up the old names, so their SPV peer discovery finds nobody. WSL's default DNS also failed on the old `x49.` names. **Fix: feed peer IPs directly** with `--addpeer` (peers listen on `44108`).
+`getnewaddress` 需要活跃的链后端。主网 DNS 种子已迁到 `reef` / `tide` / `stream` `.seeder.pearlnetwork.net`（pearl 仓库 `node/chaincfg/params.go`，#309、#346）。旧的 `seeder1/2/3.pearlresearch.ai` 及其 `x49.` 子域在 2026-10-13 已返回 NXDOMAIN。**pearl-wallet-v2.0.7** 之前的钱包（包括 v2.0.5 / `oyster` 1.4.1）仍然查旧域名，所以 SPV 找不到节点。WSL 默认 DNS 以前也解析不了旧的 `x49.` 域名。**解法：用 `--addpeer` 直接喂节点 IP**（节点端口 `44108`）。
 
-Get current peer IPs (run once) / 取当前节点 IP（跑一次）：
+Get current peer IPs (run once; any machine works) / 取当前节点 IP（跑一次，哪台机器都行）：
 ```bash
-curl -s "https://dns.google/resolve?name=seeder1.pearlresearch.ai&type=A" \
- | grep -o '"data":"[0-9.]*"' | grep -o '[0-9.]*' | head -6
+for s in reef tide stream; do
+  curl -s "https://dns.google/resolve?name=$s.seeder.pearlnetwork.net&type=A" \
+   | grep -o '"data":"[0-9.]*"' | grep -o '[0-9.]*' | head -2
+done
 ```
+Empty output means the seeder names changed again. Check `DNSSeeds` for mainnet in `node/chaincfg/params.go` of `pearl-research-labs/pearl`.
+没有输出说明种子域名又换了。去 `pearl-research-labs/pearl` 的 `node/chaincfg/params.go` 看主网的 `DNSSeeds`。
 Start the wallet daemon (Window A, keep it open) / 启动钱包守护（窗口A，开着别关）:
 ```bash
 cd ~/pearl-wallet
@@ -233,7 +237,7 @@ Turning wallet coins into USDT is the next page, not a pool button. → [03 · T
 | `sha256sum` mismatch | file is not the pinned 2.17.2 binary | stop; do not run it |
 | `invalid passphrase for master public key` | wallet was created WITH a public passphrase | `rm -rf ~/.oyster`, recreate answering `n` to public encryption (or pass `--walletpass`) |
 | `-4: blockchain RPC is inactive` | wallet has no active chain backend | start `oyster` with `--usespv --addpeer=<IP>` (see B3) |
-| `DNS discovery failed … x49.seederN… no such host` | WSL DNS can't resolve seeder subdomains | feed peer IPs from base `seeder1.pearlresearch.ai` via `--addpeer` |
+| `DNS discovery failed … x49.seederN… no such host` | the `pearlresearch.ai` seeders are gone (NXDOMAIN since at least 2026-10-13); wallets before v2.0.7 still query them | feed peer IPs from `reef`/`tide`/`stream` `.seeder.pearlnetwork.net` via `--addpeer` (see B3) |
 | `401 Unauthorized` from `prlctl` | `-u/-P` don't match the running `oyster` | use identical `-u/-P` in both commands |
 | `prlctl` warns `.pearld/pearld.conf not found` | harmless (it looks for node cert) | ignore; `--notls` + `-u/-P` is enough |
 | Kryptex `confirmed` sits under 1 and never arrives on-chain | threshold not reached, or still `unconfirmed` | keep mining through maturation; payout is automatic at 1 PRL |

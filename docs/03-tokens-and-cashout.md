@@ -2,7 +2,7 @@
 title: Token disambiguation & cash-out — turning mined PRL into money
 description: Why mined Pearl PRL is not the Binance PRL, the CEX route via SafeTrade (PRL/USDT, 0.1% fee, native deposit, USDT-TRC20 out — the cheapest path to Binance), the bridge→WPRL→DEX/OTC alternatives, a full fee comparison (SafeTrade vs lordofpearls vs pearl-otc vs bridge), the Ethereum gas math behind withdrawal cost, and the "how much to accumulate before cashing out" break-even.
 language: [en, zh]
-updated: 2026-09-27
+updated: 2026-10-13
 tags: [cashout, safetrade, kryptex, cex, trc20, wprl, bridge, otc, uniswap, gas, perle, disambiguation]
 -->
 
@@ -61,19 +61,29 @@ On SafeTrade, open the Pearl (pearlresearch.ai) deposit screen. Copy the address
 
 ```bash
 ./prlctl -u <rpc-user> -P '<rpc-pass>' -s localhost:44207 --notls --wallet \
-  sendtoaddress "prl1p<exchange-deposit>" 2
+  sendtoaddress "prl1p<exchange-deposit>" 2 0.0001
 ```
 
-`--wallet` is required; without it `sendtoaddress` is not a wallet command. If the wallet answers that it is locked, unlock it locally for a few minutes and send immediately:
-必须带 `--wallet`，否则 `sendtoaddress` 不是钱包命令。如果钱包回复已锁定，就在本机解锁几分钟并马上转出：
+Pearl's `sendtoaddress` is `<address> <amount> <fee-rate>`: the third argument is a **required** fee rate in PRL per KB (`FeeRatePerKb` in `node/btcjson/walletsvrcmds.go`), not a comment as in Bitcoin's `btcwallet`. `0.0001` worked on 2026-10-13. Keep `--wallet`. The 2026-10-13 send also went through with `-s localhost:44207` and no `--wallet`, so that flag is not what fails a send.
+Pearl 的 `sendtoaddress` 参数是 `<地址> <数量> <费率>`：第三个参数是**必填**的手续费率，单位 PRL/KB（`node/btcjson/walletsvrcmds.go` 里的 `FeeRatePerKb`），不是比特币 `btcwallet` 里的备注。2026-10-13 用 `0.0001` 成功。`--wallet` 照带。那天不带 `--wallet`、只写 `-s localhost:44207` 也转成功了，所以转账失败一般不是这个参数的原因。
+
+`-13: Enter the wallet passphrase with walletpassphrase first` means the wallet is locked. `getbalance` works locked; signing a send does not. Unlock it for two minutes, send, then lock it again:
+`-13: Enter the wallet passphrase with walletpassphrase first` 表示钱包已锁定。锁着能 `getbalance`，但不能签名转账。解锁两分钟，转出，再锁上：
 
 ```bash
+# leading space: Ubuntu's default HISTCONTROL=ignoreboth keeps this line out of ~/.bash_history
+ ./prlctl -u <rpc-user> -P '<rpc-pass>' -s localhost:44207 --notls --wallet \
+  walletpassphrase '<the-passphrase-you-set-at-create>' 120
 ./prlctl -u <rpc-user> -P '<rpc-pass>' -s localhost:44207 --notls --wallet \
-  walletpassphrase '<the-passphrase-you-set-at-create>' 300
+  sendtoaddress "prl1p<exchange-deposit>" <amount> 0.0001
+./prlctl -u <rpc-user> -P '<rpc-pass>' -s localhost:44207 --notls --wallet walletlock
 ```
 
-Type that passphrase yourself on the rig. Do not put it in this repo, in a script that gets committed, or in chat. After the test credits, repeat `sendtoaddress` for the amount you want to sell and leave the dust. The June sends cost `0.0000155` and `0.0001945` PRL in chain fees.
-口令在矿机上自己输入。不要写进本仓库、不要写进会被提交的脚本、不要贴进聊天。测试入账后，再 `sendtoaddress` 你准备卖的数量，零头留着。6 月那两笔链上费是 `0.0000155` 和 `0.0001945` PRL。
+Type that passphrase yourself on the rig. Do not put it in this repo, in a script that gets committed, or in chat. It is the private passphrase from `--create`, not the RPC password and not the mnemonic. After the test credits, repeat `sendtoaddress` for the amount you want to sell and leave the dust. The June sends cost `0.0000155` and `0.0001945` PRL in chain fees.
+口令在矿机上自己输入。不要写进本仓库、不要写进会被提交的脚本、不要贴进聊天。它是 `--create` 时设的私钥口令，不是 RPC 密码，也不是助记词。测试入账后，再 `sendtoaddress` 你准备卖的数量，零头留着。6 月那两笔链上费是 `0.0000155` 和 `0.0001945` PRL。
+
+A successful send prints only the txid. On 2026-10-13, 30 PRL at fee rate `0.0001` confirmed in block 127154 and cost `0.0001252` PRL. Pearltrack showed 30.467 PRL leaving the mining address, about 0.467 more than was sent. That gap is most likely the wallet's change going to another address of the same wallet, which pearltrack does not count under the mining address. `getbalance` in the wallet is the number to check.
+转账成功只会输出一个 txid。2026-10-13 那笔 30 PRL、费率 `0.0001`，进了第 127154 块，手续费 `0.0001252` PRL。pearltrack 显示挖矿地址转出 30.467 PRL，比实际转账多约 0.467。这多出的部分最可能是钱包找零，转到了同一个钱包的另一个地址，pearltrack 不会把它算在挖矿地址下。以钱包里的 `getbalance` 为准。
 
 SafeTrade credited after **20 confirmations** (~20–40 min that day). Read the deposit page again; do not assume the number is still 20.
 SafeTrade 当时是 **20 个确认**后入账（那天约 20–40 分钟）。再看一眼充值页，不要默认还是 20。
